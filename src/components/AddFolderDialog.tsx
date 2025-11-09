@@ -26,8 +26,6 @@ import {
     FormLabel,
     FormMessage,
 } from '@/components/ui/form'
-import { toast } from 'sonner'
-import { icons } from 'lucide-react'
 
 // 🧩 Schema
 const folderSchema = z.object({

@@ -1,5 +1,4 @@
 import { Folder } from 'lucide-react'
-import React from 'react'
 
 const RecentFolderList = () => {
     return (

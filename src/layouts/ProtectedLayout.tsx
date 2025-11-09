@@ -9,7 +9,6 @@ import {
     SidebarTrigger,
 } from '@/components/ui/sidebar'
 import { ThemeToggle } from '@/components/ThemeToggle'
-import { SearchForm } from '@/components/SearchForm'
 
 const ProtectedLayout = () => {
     const { user } = useAuthStore()

@@ -8,7 +8,7 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar'
 import { type LucideIcon } from 'lucide-react'
-import { act, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export function NavMain({
     items,

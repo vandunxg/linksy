@@ -5,11 +5,10 @@ import type { AuthState } from '@/types'
 import { persist } from 'zustand/middleware'
 import { toast } from 'sonner'
 import { AuthApiError } from '@supabase/supabase-js'
-import { ca } from 'zod/v4/locales'
 
 export const useAuthStore = create<AuthState>()(
     persist(
-        (set, get) => ({
+        (set) => ({
             accessToken: null,
             user: null,
             loading: false,

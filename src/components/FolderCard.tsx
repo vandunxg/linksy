@@ -1,4 +1,4 @@
-import { Book, MoreHorizontal, Pencil, Plus, Trash2 } from 'lucide-react'
+import {  MoreHorizontal, Pencil, Plus, Trash2 } from 'lucide-react'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 
