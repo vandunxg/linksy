@@ -1,5 +1,9 @@
 import { supabase } from '@/lib/supabase'
-import type { CreateFolderRequest, FolderResponse } from '@/types'
+import type {
+    CreateFolderRequest,
+    FolderResponse,
+    UpdateFolderRequest,
+} from '@/types'
 
 export const folderService = {
     async createFolder(
@@ -55,5 +59,21 @@ export const folderService = {
         if (error) throw error
 
         return data || []
+    },
+
+    async updateFolder(request: UpdateFolderRequest): Promise<FolderResponse> {
+        const { data, error } = await supabase
+            .from('bookmark_folder')
+            .update({
+                name: request.name,
+                description: request.description ?? '',
+                icon: request.icon ?? 'folder',
+            })
+            .eq('id', request.id)
+            .select('*')
+
+        if (error) throw error
+
+        return data[0]
     },
 }

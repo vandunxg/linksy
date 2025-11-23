@@ -1,8 +1,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 import { RecentBookmarkTable } from './RecentBookmarkTable'
+import type { BookmarkResponse } from '@/types'
 
-const RecentBookmark = () => {
+type Props = {
+    bookmarks: BookmarkResponse[]
+    loading: boolean
+}
+
+const RecentBookmark = ({ bookmarks, loading }: Props) => {
     return (
         <>
             <Card>
@@ -10,7 +16,7 @@ const RecentBookmark = () => {
                     <CardTitle>Recent Bookmarks</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <RecentBookmarkTable />
+                    <RecentBookmarkTable data={bookmarks} loading={loading} />
                 </CardContent>
             </Card>
         </>

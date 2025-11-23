@@ -1,5 +1,5 @@
 import { useAuthStore } from '@/stores/authStore'
-import { Navigate, Outlet } from 'react-router'
+import { Navigate, Outlet, useNavigate } from 'react-router'
 
 import { AppSidebar } from '@/components/app-sidebar'
 import { Separator } from '@/components/ui/separator'
@@ -9,13 +9,22 @@ import {
     SidebarTrigger,
 } from '@/components/ui/sidebar'
 import { ThemeToggle } from '@/components/ThemeToggle'
+import { ROUTES } from '@/utils/routes'
+import { useEffect } from 'react'
 
 const ProtectedLayout = () => {
     const { user } = useAuthStore()
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        if (location.pathname === '/admin') {
+            navigate('/admin/dashboard', { replace: true })
+        }
+    }, [navigate])
 
     if (!user) {
         if (!user) {
-            return <Navigate to="/auth/login" replace />
+            return <Navigate to={ROUTES.AUTH.LOGIN} replace />
         }
     }
 

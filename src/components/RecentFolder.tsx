@@ -1,12 +1,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import type { FolderResponse } from '@/types'
 import RecentFolderItem from './RecentFolderItem'
+import { LoadingSpinner } from './LoadingSpinner'
 
 type Props = {
     recentFolders: FolderResponse[]
+    fetchCurrentFolderLoading: boolean
 }
 
-const RecentFolder = ({ recentFolders }: Props) => {
+const RecentFolder = ({ recentFolders, fetchCurrentFolderLoading }: Props) => {
     return (
         <>
             <Card>
@@ -14,9 +16,13 @@ const RecentFolder = ({ recentFolders }: Props) => {
                     <CardTitle>Recent Folder</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                    {recentFolders.map((item) => (
-                        <RecentFolderItem folder={item} />
-                    ))}
+                    {fetchCurrentFolderLoading ? (
+                        <LoadingSpinner />
+                    ) : (
+                        recentFolders.map((item) => (
+                            <RecentFolderItem folder={item} />
+                        ))
+                    )}
                 </CardContent>
             </Card>
         </>

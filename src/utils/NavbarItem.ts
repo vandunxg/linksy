@@ -1,19 +1,20 @@
 import { Folder, LayoutDashboard, Tag } from 'lucide-react'
+import { ROUTES } from '@/utils/routes'
 
 export const NavbarItems = [
     {
         title: 'Dashboard',
-        url: '/dashboard',
+        url: ROUTES.ADMIN.DASHBOARD,
         icon: LayoutDashboard,
     },
     {
         title: 'Bookmarks',
-        url: '/bookmarks',
+        url: ROUTES.ADMIN.BOOKMARKS,
         icon: Tag,
     },
     {
         title: 'Folders',
-        url: '/folders',
+        url: ROUTES.ADMIN.FOLDERS,
         icon: Folder,
     },
 ]

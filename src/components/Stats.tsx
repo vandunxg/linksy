@@ -2,37 +2,35 @@
 
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
-import { Folder, Tag, Unlink } from 'lucide-react'
+import { Folder, Tag } from 'lucide-react'
 import { Link } from 'react-router'
 
-const data = [
-    {
-        name: 'Total bookmarks',
-        value: '123',
-        changeType: 'positive',
-        href: '/bookmarks',
-        icon: Tag,
-    },
-    {
-        name: 'Total folders',
-        value: '14',
-        changeType: 'positive',
-        href: '/folders',
-        icon: Folder,
-    },
-    {
-        name: 'Dead links',
-        value: '11',
-        changeType: 'negative',
-        href: '#',
-        icon: Unlink,
-    },
-]
+type Props = {
+    totalBookmarks: number
+    totalFolders: number
+}
 
-export default function Stats() {
+export default function Stats({ totalBookmarks, totalFolders }: Props) {
+    const data = [
+        {
+            name: 'Total bookmarks',
+            value: totalBookmarks,
+            changeType: 'positive',
+            href: '/admin/bookmarks',
+            icon: Tag,
+        },
+        {
+            name: 'Total folders',
+            value: totalFolders,
+            changeType: 'positive',
+            href: '/admin/folders',
+            icon: Folder,
+        },
+    ]
+
     return (
         <div className="flex w-full items-center justify-center">
-            <dl className="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <dl className="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2">
                 {data.map((item) => (
                     <Card key={item.name} className="gap-0 p-0">
                         <CardContent className="p-6">

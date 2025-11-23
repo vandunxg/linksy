@@ -45,3 +45,10 @@ export const ICON_MAP: Record<string, React.ElementType> = {
     display: Airplay,
     file: FileCode,
 }
+
+export const FOLDER_ACTION = {
+    ADD_NEW_FOLDER: 'add_new_folder',
+    UPDATE_FOLDER: 'update_folder',
+    DELETE_FOLDER: 'delete_folder',
+    FETCH_FOLDER: 'fetch_folder',
+}

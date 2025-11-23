@@ -30,12 +30,46 @@ export interface CreateFolderRequest {
     icon: string
 }
 
+export interface UpdateFolderRequest {
+    id: string | undefined
+    name: string
+    description?: string
+    icon: string
+}
+
 export interface FolderState {
     folders: FolderResponse[]
     recentFolders: FolderResponse[]
+    reloadRecentFolder: boolean
+    actionType: string
     fetchAllFolder: () => void
     createNewFolder: (request: CreateFolderRequest) => void
     deleteFolder: (id: string) => void
     getRecentFolders: () => void
+    updateFolder: (request: UpdateFolderRequest) => void
     loading: boolean
+}
+
+export interface BookmarkResponse {
+    id: string
+    title: string
+    url: string
+    description: string | null
+    folder_id: string | null
+    created_at: Date
+}
+
+export interface CreateBookmarkRequest {
+    title: string
+    url: string
+    description?: string
+    folder_id?: string
+}
+
+export interface UpdateBookmarkRequest {
+    id: string
+    title: string
+    url: string
+    description?: string
+    folder_id?: string
 }

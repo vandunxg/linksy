@@ -8,18 +8,15 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
-import { useFolderStore } from '@/stores/folderStore'
 import type { Dispatch, SetStateAction } from 'react'
 
 type Props = {
     isOpen: boolean
     setIsOpen: Dispatch<SetStateAction<boolean>>
-    targetId: string
+    onConfirm: () => void
 }
 
-export function AlertDeleteDialog({ isOpen, setIsOpen, targetId }: Props) {
-    const { deleteFolder, loading } = useFolderStore()
-
+export function AlertDeleteDialog({ isOpen, setIsOpen, onConfirm }: Props) {
     return (
         <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
             <AlertDialogContent>
@@ -29,16 +26,15 @@ export function AlertDeleteDialog({ isOpen, setIsOpen, targetId }: Props) {
                     </AlertDialogTitle>
                     <AlertDialogDescription>
                         This action cannot be undone. This will permanently
-                        delete your account and remove your data from our
-                        servers.
+                        delete this bookmark.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
                     <AlertDialogAction
-                        disabled={loading}
                         onClick={() => {
-                            deleteFolder(targetId)
+                            onConfirm()
+                            setIsOpen(false)
                         }}
                     >
                         Continue

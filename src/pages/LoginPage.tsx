@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/form'
 import { useForm } from 'react-hook-form'
 import { useAuthStore } from '@/stores/authStore'
+import { ROUTES } from '@/utils/routes'
 
 const GoogleIcon = (
     props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>
@@ -72,7 +73,7 @@ export default function LoginPage() {
     })
 
     useEffect(() => {
-        if (accessToken) navigate('/dashboard')
+        if (accessToken) navigate(ROUTES.ADMIN.ROOT)
     }, [accessToken, navigate])
 
     const onSubmit = async (values: z.infer<typeof loginSchema>) => {
@@ -80,7 +81,7 @@ export default function LoginPage() {
             email: values.email,
             password: values.password,
         })
-        navigate('/dashboard')
+        navigate(ROUTES.ADMIN.ROOT)
     }
 
     const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false)
