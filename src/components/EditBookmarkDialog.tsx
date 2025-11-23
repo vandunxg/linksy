@@ -1,21 +1,7 @@
-import { useState, type Dispatch, type SetStateAction, useEffect } from 'react'
+import { type Dispatch, type SetStateAction, useEffect } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-
-import {
-    Command,
-    CommandInput,
-    CommandList,
-    CommandItem,
-    CommandEmpty,
-    CommandGroup,
-} from '@/components/ui/command'
-import {
-    Popover,
-    PopoverTrigger,
-    PopoverContent,
-} from '@/components/ui/popover'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -40,8 +26,7 @@ import {
     FormMessage,
 } from '@/components/ui/form'
 import type { BookmarkResponse } from '@/types'
-import { Check, ChevronsUpDown } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { FolderSelect } from '@/components/FolderSelect'
 
 // 🧩 Schema
 const bookmarkSchema = z.object({
@@ -64,7 +49,6 @@ type Props = {
 export function EditBookmarkDialog({ isOpen, setIsOpen, bookmark }: Props) {
     const { folders, fetchAllFolder } = useFolderStore()
     const { updateBookmark } = useBookmarkStore()
-    const [openFolderSelect, setOpenFolderSelect] = useState(false)
 
     useEffect(() => {
         if (isOpen) {
@@ -162,83 +146,11 @@ export function EditBookmarkDialog({ isOpen, setIsOpen, bookmark }: Props) {
                             control={form.control}
                             name="folderId"
                             render={({ field }) => (
-                                <FormItem className="flex flex-col">
-                                    <FormLabel>Folder</FormLabel>
-                                    <Popover
-                                        open={openFolderSelect}
-                                        onOpenChange={setOpenFolderSelect}
-                                    >
-                                        <PopoverTrigger asChild>
-                                            <FormControl>
-                                                <Button
-                                                    variant="outline"
-                                                    role="combobox"
-                                                    className={cn(
-                                                        'w-full justify-between',
-                                                        !field.value &&
-                                                            'text-muted-foreground'
-                                                    )}
-                                                >
-                                                    {field.value
-                                                        ? folders.find(
-                                                              (folder) =>
-                                                                  folder.id ===
-                                                                  field.value
-                                                          )?.name
-                                                        : 'Select folder'}
-                                                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                                </Button>
-                                            </FormControl>
-                                        </PopoverTrigger>
-                                        <PopoverContent className="w-[200px] p-0">
-                                            <Command>
-                                                <CommandInput placeholder="Search folder..." />
-                                                <CommandList>
-                                                    <CommandEmpty>
-                                                        No folder found.
-                                                    </CommandEmpty>
-                                                    <CommandGroup>
-                                                        {folders.map(
-                                                            (folder) => (
-                                                                <CommandItem
-                                                                    value={
-                                                                        folder.name
-                                                                    }
-                                                                    key={
-                                                                        folder.id
-                                                                    }
-                                                                    onSelect={() => {
-                                                                        form.setValue(
-                                                                            'folderId',
-                                                                            folder.id
-                                                                        )
-                                                                        setOpenFolderSelect(
-                                                                            false
-                                                                        )
-                                                                    }}
-                                                                >
-                                                                    <Check
-                                                                        className={cn(
-                                                                            'mr-2 h-4 w-4',
-                                                                            folder.id ===
-                                                                                field.value
-                                                                                ? 'opacity-100'
-                                                                                : 'opacity-0'
-                                                                        )}
-                                                                    />
-                                                                    {
-                                                                        folder.name
-                                                                    }
-                                                                </CommandItem>
-                                                            )
-                                                        )}
-                                                    </CommandGroup>
-                                                </CommandList>
-                                            </Command>
-                                        </PopoverContent>
-                                    </Popover>
-                                    <FormMessage />
-                                </FormItem>
+                                <FolderSelect
+                                    folders={folders}
+                                    value={field.value}
+                                    onValueChange={field.onChange}
+                                />
                             )}
                         />
 

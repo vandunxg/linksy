@@ -33,54 +33,58 @@ export function BookmarkCard({ bookmark, onDelete, onClick }: Props) {
     return (
         <>
             <Card
-                className="hover:border-primary/50 flex min-h-[150px] min-w-[300px] cursor-pointer flex-col justify-between p-4 transition-all hover:shadow-lg sm:p-5"
+                className="hover:border-primary/50 flex min-h-[150px] w-full cursor-pointer flex-col justify-between p-3 transition-all hover:shadow-lg sm:p-4 md:p-5"
                 onClick={() => onClick?.(bookmark)}
             >
                 <CardHeader className="p-0">
-                    <div className="flex items-center justify-around gap-2">
+                    <div className="flex items-start justify-between gap-2">
                         {/* LEFT */}
-                        <div className="flex w-[80%] min-w-0 flex-1 items-center gap-3 overflow-hidden">
+                        <div className="flex min-w-0 flex-1 items-start gap-2 overflow-hidden sm:gap-3">
                             {/* Icon */}
-                            <div className="bg-muted flex shrink-0 items-center justify-center rounded-lg p-2">
+                            <div className="bg-muted flex shrink-0 items-center justify-center rounded-lg p-1.5 sm:p-2">
                                 <img
                                     src={webLogo}
-                                    className="h-6 w-6 rounded-md"
+                                    className="h-5 w-5 rounded-md sm:h-6 sm:w-6"
                                     alt="logo"
                                 />
                             </div>
 
                             {/* Text block */}
-                            <div className="flex min-w-0 flex-col overflow-hidden">
+                            <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
                                 <p
                                     title={bookmark.title}
-                                    className="text-accent-foreground line-clamp-1 text-lg font-medium"
+                                    className="text-accent-foreground line-clamp-1 text-base font-medium break-all sm:text-lg"
                                 >
                                     {bookmark.title}
                                 </p>
-                                <p className="text-muted-foreground line-clamp-1 text-[11px]">
+                                <p className="text-muted-foreground line-clamp-1 text-[10px] break-all sm:text-[11px]">
                                     {bookmark.url}
                                 </p>
                             </div>
                         </div>
 
                         {/* RIGHT */}
-                        {isFav ? (
-                            <FaHeart
-                                size={18}
-                                onClick={(e) => {
-                                    e.stopPropagation()
-                                    setIsFav((prev) => !prev)
-                                }}
-                            />
-                        ) : (
-                            <FaRegHeart
-                                size={18}
-                                onClick={(e) => {
-                                    e.stopPropagation()
-                                    setIsFav((prev) => !prev)
-                                }}
-                            />
-                        )}
+                        <div className="flex shrink-0 items-center">
+                            {isFav ? (
+                                <FaHeart
+                                    size={16}
+                                    className="sm:h-[18px] sm:w-[18px]"
+                                    onClick={(e) => {
+                                        e.stopPropagation()
+                                        setIsFav((prev) => !prev)
+                                    }}
+                                />
+                            ) : (
+                                <FaRegHeart
+                                    size={16}
+                                    className="sm:h-[18px] sm:w-[18px]"
+                                    onClick={(e) => {
+                                        e.stopPropagation()
+                                        setIsFav((prev) => !prev)
+                                    }}
+                                />
+                            )}
+                        </div>
                     </div>
                 </CardHeader>
 

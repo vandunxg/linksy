@@ -1,5 +1,6 @@
 import type { FolderResponse } from '@/types'
 import { ICON_MAP } from '@/utils/Constant'
+import { useNavigate } from 'react-router-dom'
 
 type Props = {
     folder: FolderResponse
@@ -7,9 +8,17 @@ type Props = {
 
 const RecentFolderItem = ({ folder }: Props) => {
     const FolderIcon = ICON_MAP[folder?.icon]
+    const navigate = useNavigate()
+
+    const handleClick = () => {
+        navigate(`/admin/bookmarks?folder=${folder.id}`)
+    }
 
     return (
-        <div className="hover:bg-muted/70 flex items-center gap-3 rounded-lg p-2 transition-colors">
+        <div
+            onClick={handleClick}
+            className="hover:bg-muted/70 flex cursor-pointer items-center gap-3 rounded-lg p-2 transition-colors"
+        >
             {/* Icon */}
             <div className="bg-muted flex items-center justify-center rounded-lg p-2">
                 <FolderIcon size={18} className="text-muted-foreground" />

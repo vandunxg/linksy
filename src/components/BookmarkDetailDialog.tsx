@@ -69,7 +69,7 @@ export function BookmarkDetailDialog({ isOpen, setIsOpen, bookmark }: Props) {
 
                     {/* Metadata */}
                     <div className="text-muted-foreground flex flex-wrap gap-4 text-sm">
-                        <div className="flex items-center gap-1.5">
+                        <div className="flex items-center justify-center gap-1.5">
                             <Calendar className="h-4 w-4" />
                             <span>
                                 Added{' '}
@@ -79,7 +79,7 @@ export function BookmarkDetailDialog({ isOpen, setIsOpen, bookmark }: Props) {
                             </span>
                         </div>
                         {folderName && (
-                            <div className="flex items-center gap-1.5">
+                            <div className="flex items-center justify-center gap-1.5">
                                 <Folder className="h-4 w-4" />
                                 <span>{folderName}</span>
                             </div>

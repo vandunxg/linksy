@@ -13,8 +13,9 @@ import {
 import type { FolderResponse } from '@/types'
 import { ICON_MAP } from '@/utils/Constant'
 import { AlertDeleteDialog } from './AlertDeleteDialog'
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { EditFolderDialog } from './EditFolderDialog'
+import { useBookmarkStore } from '@/stores/bookmarkStore'
 
 type Props = {
     data: FolderResponse
@@ -30,48 +31,58 @@ export function FolderCard({ data, onAddBookmark, onClick }: Props) {
     const [folderEditTarget, setFolderEditTarget] =
         useState<FolderResponse | null>(null)
 
+    const { bookmarks } = useBookmarkStore()
+
+    // Calculate real bookmark count for this folder
+    const bookmarkCount = useMemo(() => {
+        return bookmarks.filter((bookmark) => bookmark.folder_id === data.id)
+            .length
+    }, [bookmarks, data.id])
+
     return (
         <>
             <Card
-                className="hover:border-primary/50 flex min-h-[200px] min-w-[300px] cursor-pointer flex-col justify-between p-4 transition-shadow hover:shadow-lg sm:p-5"
+                className="hover:border-primary/50 flex min-h-[180px] w-full cursor-pointer flex-col justify-between p-3 transition-shadow hover:shadow-lg sm:min-h-[200px] sm:p-4 md:p-5"
                 onClick={() => onClick?.(data.id)}
             >
                 <CardHeader className="p-0">
-                    <div className="flex items-center justify-around gap-2">
+                    <div className="flex items-start justify-between gap-2">
                         {/* LEFT */}
-                        <div className="flex w-[80%] min-w-0 flex-1 items-center gap-3 overflow-hidden">
+                        <div className="flex min-w-0 flex-1 items-start gap-2 overflow-hidden sm:gap-3">
                             {/* Icon */}
-                            <div className="bg-muted flex shrink-0 items-center justify-center rounded-lg p-2">
+                            <div className="bg-muted flex shrink-0 items-center justify-center rounded-lg p-1.5 sm:p-2">
                                 <FolderIcon
-                                    size={22}
-                                    className="text-primary"
+                                    size={20}
+                                    className="text-primary sm:h-[22px] sm:w-[22px]"
                                 />
                             </div>
 
                             {/* Text block */}
-                            <div className="flex min-w-0 flex-col overflow-hidden">
+                            <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
                                 <p
                                     title={data?.name}
-                                    className="text-accent-foreground line-clamp-1 text-lg font-medium"
+                                    className="text-accent-foreground line-clamp-1 text-base font-medium break-all sm:text-lg"
                                 >
                                     {data?.name && data.name.length > 15
                                         ? data.name.slice(0, 15) + '…'
                                         : data?.name || 'Untitled Folder'}
                                 </p>
-                                <p className="text-muted-foreground text-sm">
-                                    {/* Placeholder count */}
-                                    245 bookmarks
+                                <p className="text-muted-foreground text-xs sm:text-sm">
+                                    {bookmarkCount}{' '}
+                                    {bookmarkCount === 1
+                                        ? 'bookmark'
+                                        : 'bookmarks'}
                                 </p>
                             </div>
                         </div>
 
                         {/* RIGHT */}
-                        <div>
+                        <div className="flex shrink-0 items-center">
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button
                                         variant="ghost"
-                                        className="h-8 w-8 shrink-0 p-0"
+                                        className="h-7 w-7 shrink-0 p-0 sm:h-8 sm:w-8"
                                         onClick={(e) => e.stopPropagation()}
                                     >
                                         <span className="sr-only">
@@ -110,13 +121,13 @@ export function FolderCard({ data, onAddBookmark, onClick }: Props) {
                     </div>
                 </CardHeader>
 
-                <CardContent className="space-y-4 p-0">
-                    <p className="text-muted-foreground line-clamp-1 text-sm">
-                        {data?.description}
+                <CardContent className="mt-3 space-y-3 p-0 sm:mt-4 sm:space-y-4">
+                    <p className="text-muted-foreground line-clamp-2 text-xs break-words sm:text-sm">
+                        {data?.description || 'No description'}
                     </p>
                     <Button
                         variant="outline"
-                        className="w-full"
+                        className="h-9 w-full text-sm sm:h-10"
                         onClick={(e) => {
                             e.stopPropagation()
                             onAddBookmark?.(data.id)

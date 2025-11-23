@@ -8,28 +8,28 @@ Linksy is a web application for managing bookmarks organized by user-defined gro
 
 ### Authentication
 
-* Users can register and log in using email and password.
-* Session handling and protected routes.
+- Users can register and log in using email and password.
+- Session handling and protected routes.
 
 ### Group Management
 
-* Create groups with name, description, and optional color.
-* Edit existing groups.
-* Delete groups and their associated bookmarks.
+- Create groups with name, description, and optional color.
+- Edit existing groups.
+- Delete groups and their associated bookmarks.
 
 ### Bookmark Management
 
-* Add bookmarks to a selected group.
-* Edit bookmarks (URL, title, description, assigned group).
-* Delete bookmarks.
+- Add bookmarks to a selected group.
+- Edit bookmarks (URL, title, description, assigned group).
+- Delete bookmarks.
 
 ### Dashboard
 
-* Display recent bookmarks.
-* Display user-created groups.
+- Display recent bookmarks.
+- Display user-created groups.
 
 ## 3. Non-functional Requirements
 
-* Responsive UI
-* Secure data access using Supabase RLS
-* Type-safe frontend with TypeScript
+- Responsive UI
+- Secure data access using Supabase RLS
+- Type-safe frontend with TypeScript
