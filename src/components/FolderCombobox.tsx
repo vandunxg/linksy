@@ -1,7 +1,5 @@
 import {
     Command,
-    CommandEmpty,
-    CommandGroup,
     CommandInput,
     CommandItem,
     CommandList,
@@ -14,13 +12,23 @@ import {
 } from '@/components/ui/popover'
 import { useFolderStore } from '@/stores/folderStore'
 import { Button } from './ui/button'
+import { motion } from 'framer-motion'
+import { ICON_MAP } from '@/utils/Constant'
 
-const FolderCombobox = ({ open, setOpen }) => {
+type Props = {
+    open: boolean
+    setOpen: (b: boolean) => void
+}
+
+const FolderCombobox = ({ open, setOpen }: Props) => {
     const { folders } = useFolderStore()
 
     const selectedFolder = folders.find((item) => item.id === '')
 
-    const SelectedFolderIcon = selectedFolder?.icon
+    const SelectedFolderIcon =
+        selectedFolder && ICON_MAP[selectedFolder.icon]
+            ? ICON_MAP[selectedFolder.icon]
+            : ICON_MAP['folder']
 
     return (
         <Popover open={open} onOpenChange={setOpen}>
@@ -37,35 +45,40 @@ const FolderCombobox = ({ open, setOpen }) => {
                                 <span>{selectedFolder.name}</span>
                             </>
                         ) : (
-                            <span>Select icon...</span>
+                            <span>Select folder…</span>
                         )}
                     </div>
                 </Button>
             </PopoverTrigger>
+
             <PopoverContent className="w-[320px] p-0" align="start">
                 <Command>
-                    <CommandInput placeholder="Search icon..." />
+                    <CommandInput placeholder="Search folder..." />
                     <CommandList className="max-h-[250px] overflow-y-auto">
-                        {folders.map((item) => (
-                            <CommandItem
-                                key={item.id}
-                                value={item.id}
-                                onSelect={() => {
-                                    field.onChange(item.id)
-                                    setOpen(false)
-                                }}
-                                className="flex cursor-pointer items-center gap-2 py-2"
-                            >
-                                <motion.div
-                                    whileHover={{
-                                        scale: 1.1,
+                        {folders.map((item) => {
+                            const IconComponent =
+                                ICON_MAP[item.icon] ?? ICON_MAP['folder']
+
+                            return (
+                                <CommandItem
+                                    key={item.id}
+                                    value={item.id}
+                                    onSelect={() => {
+                                        setOpen(false)
                                     }}
+                                    className="flex cursor-pointer items-center gap-2 py-2"
                                 >
-                                    <item.icon className="text-muted-foreground h-5 w-5" />
-                                </motion.div>
-                                <span>{item.name}</span>
-                            </CommandItem>
-                        ))}
+                                    <motion.div
+                                        whileHover={{
+                                            scale: 1.1,
+                                        }}
+                                    >
+                                        <IconComponent className="text-muted-foreground h-5 w-5" />
+                                    </motion.div>
+                                    <span>{item.name}</span>
+                                </CommandItem>
+                            )
+                        })}
                     </CommandList>
                 </Command>
             </PopoverContent>

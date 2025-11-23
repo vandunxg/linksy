@@ -15,7 +15,6 @@ import {
 } from '@/components/ui/sidebar'
 import { useFolderStore } from '@/stores/folderStore'
 import { useEffect } from 'react'
-import { cn } from '@/lib/utils'
 import { ICON_MAP } from '@/utils/Constant'
 
 export function PublicSidebar({
