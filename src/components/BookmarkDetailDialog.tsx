@@ -27,7 +27,7 @@ export function BookmarkDetailDialog({ isOpen, setIsOpen, bookmark }: Props) {
 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogContent className="sm:max-w-[500px]">
+            <DialogContent className="border-primary/20 sm:max-w-[500px]">
                 <DialogHeader>
                     <div className="mb-2 flex items-center gap-3">
                         <div className="bg-muted flex h-10 w-10 shrink-0 items-center justify-center rounded-lg p-2">
