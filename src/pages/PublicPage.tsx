@@ -109,7 +109,7 @@ const PublicPage = () => {
                             >
                                 <BookmarkCard
                                     bookmark={bookmark}
-                                    // Public view: no delete action
+                                    isPublic={true}
                                     onDelete={() => {}}
                                     onClick={(b) => {
                                         setSelectedBookmark(b)

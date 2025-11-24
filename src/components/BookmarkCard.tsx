@@ -19,12 +19,13 @@ import type { BookmarkResponse } from '@/types'
 type Props = {
     bookmark: BookmarkResponse
     onDelete: (id: string) => void
-    onClick?: (bookmark: BookmarkResponse) => void
+    onClick?: (bookmark: BookmarkResponse) => void,
+    isPublic?: boolean
 }
 
 import { EditBookmarkDialog } from './EditBookmarkDialog'
 
-export function BookmarkCard({ bookmark, onDelete, onClick }: Props) {
+export function BookmarkCard({ bookmark, onDelete, onClick, isPublic = false }: Props) {
     const webLogo = getWebsiteLogo(bookmark.url)
     const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState<boolean>(false)
     const [isOpenEditDialog, setIsOpenEditDialog] = useState<boolean>(false)
@@ -119,7 +120,10 @@ export function BookmarkCard({ bookmark, onDelete, onClick }: Props) {
                                     Open link
                                 </a>
                             </DropdownMenuItem>
-                            <DropdownMenuItem
+                            {
+                                !isPublic ? (
+                                     <>
+                                     <DropdownMenuItem
                                 onClick={(e) => {
                                     e.stopPropagation()
                                     setIsOpenEditDialog(true)
@@ -135,7 +139,9 @@ export function BookmarkCard({ bookmark, onDelete, onClick }: Props) {
                             >
                                 <Trash2 className="mr-2 h-4 w-4 text-red-500" />{' '}
                                 Delete
-                            </DropdownMenuItem>
+                            </DropdownMenuItem></>
+                                ) : <></>
+                            }
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>
