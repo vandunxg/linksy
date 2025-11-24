@@ -1,157 +1,174 @@
-# ⚛️ React TypeScript Boilerplate — Tailwind + ShadCN UI
+# Linksy — Save & Organize Your Links
 
-A modern boilerplate for **React + TypeScript** applications, pre-configured with:
-
-- ⚡️ **Vite** – Super-fast build tool
-- 💅 **Tailwind CSS** – Utility-first styling
-- 🧩 **ShadCN UI** – Beautiful, customizable components
-- 🧠 **TypeScript** – Type-safe and IDE-friendly
-- 🎨 **Prettier + ESLint** – Code formatting and linting setup
-- 📁 **@/** alias – Clean import paths
-- 🚀 Ready for production and easy to extend
+A simple and powerful **Bookmark Manager** to organize folders, save URLs, search bookmarks, and share collections. Built with **React + TypeScript + Vite**, using modern UI components and clean architecture.
 
 ---
 
-## 📦 Installation
+## 🚀 Features
+
+* Save and manage bookmarks with ease
+* Organize your links into folders and collections
+* Search bookmarks instantly
+* View analytics and recent activities
+* Public sharing of folders and collections
+* User authentication & protected routes
+* Beautiful UI built using reusable components
+* OG/OpenGraph metadata for social sharing
+
+---
+
+## 🏗 Project Structure Overview
+
+```
+project
+├── agent              # Internal documentation, requirements, planning
+├── public             # Static assets, including OG-image
+├── src
+│   ├── assets         # Static UI assets
+│   ├── components     # UI components & feature components
+│   │   ├── ui         # Reusable shadcn/ui-based components
+│   │   ├── dialogs, cards, tables, navigation, etc.
+│   ├── hooks          # Custom React hooks
+│   ├── layouts        # Layout wrappers: Auth, Public, Protected
+│   ├── lib            # API clients, Supabase client, utilities
+│   ├── pages          # Page-level components
+│   ├── routes         # Centralized routing config
+│   ├── services       # API service modules (auth, bookmark, folder)
+│   ├── stores         # Global state stores (Zustand)
+│   ├── types          # Shared TypeScript types
+│   ├── utils          # Constants, theme provider, helpers
+│   ├── App.tsx        # Main app component
+│   ├── main.tsx       # App bootstrap
+│   └── index.css      # Global styles
+├── config files       # tsconfig, eslint, prettier, vite, vercel
+└── README.md
+```
+
+---
+
+## 🧰 Tech Stack
+
+* **React 18**
+* **TypeScript**
+* **Vite** (Lightning-fast dev server)
+* **Zustand** for state management
+* **Axios** for API calls
+* **Supabase** for authentication & storage
+* **shadcn/ui** for consistent and modern UI components
+
+---
+
+## 🖼 Open Graph (OG) Metadata
+
+This project includes full meta tags for rich link previews:
+
+* `og:title`
+* `og:description`
+* `og:type`
+* `og:image`
+* Twitter card metadata
+
+Located inside `index.html`.
+
+The OG-image lives at:
+
+```
+public/og-image.png
+```
+
+---
+
+## 🔧 Installation & Setup
+
+### 1. Clone the repository
 
 ```bash
-# Clone the repository
-git clone https://github.com/vandunxg/shadcn_template.git
-cd shadcn_template
+git clone https://github.com/vandunxg/linksy.git
+cd linksy
+```
 
-# Install dependencies
+### 2. Install dependencies
+
+```bash
 npm install
-# or
-yarn install
-# or
-pnpm install
 ```
 
----
-
-## 🧠 Scripts
-
-| Command           | Description                         |
-| ----------------- | ----------------------------------- |
-| `npm run dev`     | Start the development server        |
-| `npm run build`   | Build the project for production    |
-| `npm run preview` | Preview the production build        |
-| `npm run lint`    | Run ESLint to check for code issues |
-| `npm run format`  | Format code using Prettier          |
-
----
-
-## 🎨 Prettier + Tailwind Configuration
-
-```json
-{
-    "plugins": ["prettier-plugin-tailwindcss"],
-    "singleQuote": true,
-    "semi": false,
-    "tabWidth": 2,
-    "trailingComma": "es5"
-}
-```
-
-Example `.prettierignore`:
-
-```
-node_modules
-dist
-build
-coverage
-```
-
----
-
-## ⚙️ @/ Alias Configuration
-
-In `vite.config.ts`:
-
-```ts
-import path from 'path'
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-
-export default defineConfig({
-    plugins: [react()],
-    resolve: {
-        alias: {
-            '@': path.resolve(__dirname, './src'),
-        },
-    },
-})
-```
-
-In `tsconfig.json`:
-
-```json
-{
-    "compilerOptions": {
-        "baseUrl": ".",
-        "paths": {
-            "@/*": ["src/*"]
-        }
-    }
-}
-```
-
----
-
-## 🧩 ShadCN UI Setup
+### 3. Run development server
 
 ```bash
-npx shadcn-ui init
+npm run dev
 ```
 
-Add components:
-
-```bash
-npx shadcn-ui add button card input
-```
-
-Browse components: [https://ui.shadcn.com](https://ui.shadcn.com)
-
----
-
-## 🧱 Project Structure
-
-```
-├── src/
-│   ├── components/
-│   │   └── ui/
-│   ├── pages/
-│   ├── hooks/
-│   ├── lib/
-│   └── main.tsx
-├── public/
-├── index.html
-├── tailwind.config.js
-├── tsconfig.json
-├── vite.config.ts
-└── package.json
-```
-
----
-
-## 🚀 Deployment
+### 4. Build for production
 
 ```bash
 npm run build
 ```
 
-The build output will be in `/dist` — deploy easily to **Vercel**, **Netlify**, or **Cloudflare Pages**.
+---
+
+## 📦 Folder Highlights
+
+### Components (src/components)
+
+* Modular structure
+* Reusable UI components inside `/ui`
+* Feature-specific components: dialogs, cards, tables, navigation
+
+### Services (src/services)
+
+Encapsulates all API requests:
+
+* `authService.ts`
+* `bookmarkService.ts`
+* `folderService.ts`
+
+### Stores (src/stores)
+
+Zustand stores for:
+
+* Authentication
+* Bookmarks
+* Folders
+
+### Pages
+
+* Dashboard
+* Folders
+* Bookmarks
+* Login
+* Public shared pages
 
 ---
 
-## ❤️ Contributing
+## 🌐 Deployment
 
-- Fork this repository
-- Create a new branch: `feature/my-feature`
-- Open a Pull Request
+This project includes `vercel.json` for smooth deployment on **Vercel**.
 
 ---
 
-## 📜 License
+## 🛡 Meta Tags Example (index.html)
 
-MIT License © 2025 — [vandunxg](https://github.com/vandunxg)
+```html
+<meta property="og:title" content="Linksy — Save & Organize Your Links" />
+<meta property="og:description" content="A simple and powerful Bookmark Manager to organize folders, save URLs, search bookmarks, and share collections." />
+<meta property="og:image" content="https://linksy-ruddy.vercel.app/og-image.png" />
+```
+
+---
+
+## ✨ Summary
+
+Linksy is a modern, beautifully designed **bookmark manager** that focuses on simplicity, speed, and usability. This project provides a scalable architecture, modular UI, and clean codebase for easy collaboration and upgrades.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Feel free to submit issues or pull requests.
+
+---
+
+## 📄 License
+
+MIT License — Free to use and modify.
