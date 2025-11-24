@@ -19,13 +19,18 @@ import type { BookmarkResponse } from '@/types'
 type Props = {
     bookmark: BookmarkResponse
     onDelete: (id: string) => void
-    onClick?: (bookmark: BookmarkResponse) => void,
+    onClick?: (bookmark: BookmarkResponse) => void
     isPublic?: boolean
 }
 
 import { EditBookmarkDialog } from './EditBookmarkDialog'
 
-export function BookmarkCard({ bookmark, onDelete, onClick, isPublic = false }: Props) {
+export function BookmarkCard({
+    bookmark,
+    onDelete,
+    onClick,
+    isPublic = false,
+}: Props) {
     const webLogo = getWebsiteLogo(bookmark.url)
     const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState<boolean>(false)
     const [isOpenEditDialog, setIsOpenEditDialog] = useState<boolean>(false)
@@ -120,28 +125,29 @@ export function BookmarkCard({ bookmark, onDelete, onClick, isPublic = false }: 
                                     Open link
                                 </a>
                             </DropdownMenuItem>
-                            {
-                                !isPublic ? (
-                                     <>
-                                     <DropdownMenuItem
-                                onClick={(e) => {
-                                    e.stopPropagation()
-                                    setIsOpenEditDialog(true)
-                                }}
-                            >
-                                <Pencil className="mr-2 h-4 w-4" /> Edit
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                                onClick={(e) => {
-                                    e.stopPropagation()
-                                    setIsOpenDeleteDialog(true)
-                                }}
-                            >
-                                <Trash2 className="mr-2 h-4 w-4 text-red-500" />{' '}
-                                Delete
-                            </DropdownMenuItem></>
-                                ) : <></>
-                            }
+                            {!isPublic ? (
+                                <>
+                                    <DropdownMenuItem
+                                        onClick={(e) => {
+                                            e.stopPropagation()
+                                            setIsOpenEditDialog(true)
+                                        }}
+                                    >
+                                        <Pencil className="mr-2 h-4 w-4" /> Edit
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem
+                                        onClick={(e) => {
+                                            e.stopPropagation()
+                                            setIsOpenDeleteDialog(true)
+                                        }}
+                                    >
+                                        <Trash2 className="mr-2 h-4 w-4 text-red-500" />{' '}
+                                        Delete
+                                    </DropdownMenuItem>
+                                </>
+                            ) : (
+                                <></>
+                            )}
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>

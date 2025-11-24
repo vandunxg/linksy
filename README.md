@@ -6,14 +6,14 @@ A simple and powerful **Bookmark Manager** to organize folders, save URLs, searc
 
 ## 🚀 Features
 
-* Save and manage bookmarks with ease
-* Organize your links into folders and collections
-* Search bookmarks instantly
-* View analytics and recent activities
-* Public sharing of folders and collections
-* User authentication & protected routes
-* Beautiful UI built using reusable components
-* OG/OpenGraph metadata for social sharing
+- Save and manage bookmarks with ease
+- Organize your links into folders and collections
+- Search bookmarks instantly
+- View analytics and recent activities
+- Public sharing of folders and collections
+- User authentication & protected routes
+- Beautiful UI built using reusable components
+- OG/OpenGraph metadata for social sharing
 
 ---
 
@@ -48,13 +48,13 @@ project
 
 ## 🧰 Tech Stack
 
-* **React 18**
-* **TypeScript**
-* **Vite** (Lightning-fast dev server)
-* **Zustand** for state management
-* **Axios** for API calls
-* **Supabase** for authentication & storage
-* **shadcn/ui** for consistent and modern UI components
+- **React 18**
+- **TypeScript**
+- **Vite** (Lightning-fast dev server)
+- **Zustand** for state management
+- **Axios** for API calls
+- **Supabase** for authentication & storage
+- **shadcn/ui** for consistent and modern UI components
 
 ---
 
@@ -62,11 +62,11 @@ project
 
 This project includes full meta tags for rich link previews:
 
-* `og:title`
-* `og:description`
-* `og:type`
-* `og:image`
-* Twitter card metadata
+- `og:title`
+- `og:description`
+- `og:type`
+- `og:image`
+- Twitter card metadata
 
 Located inside `index.html`.
 
@@ -111,33 +111,33 @@ npm run build
 
 ### Components (src/components)
 
-* Modular structure
-* Reusable UI components inside `/ui`
-* Feature-specific components: dialogs, cards, tables, navigation
+- Modular structure
+- Reusable UI components inside `/ui`
+- Feature-specific components: dialogs, cards, tables, navigation
 
 ### Services (src/services)
 
 Encapsulates all API requests:
 
-* `authService.ts`
-* `bookmarkService.ts`
-* `folderService.ts`
+- `authService.ts`
+- `bookmarkService.ts`
+- `folderService.ts`
 
 ### Stores (src/stores)
 
 Zustand stores for:
 
-* Authentication
-* Bookmarks
-* Folders
+- Authentication
+- Bookmarks
+- Folders
 
 ### Pages
 
-* Dashboard
-* Folders
-* Bookmarks
-* Login
-* Public shared pages
+- Dashboard
+- Folders
+- Bookmarks
+- Login
+- Public shared pages
 
 ---
 
@@ -151,8 +151,14 @@ This project includes `vercel.json` for smooth deployment on **Vercel**.
 
 ```html
 <meta property="og:title" content="Linksy — Save & Organize Your Links" />
-<meta property="og:description" content="A simple and powerful Bookmark Manager to organize folders, save URLs, search bookmarks, and share collections." />
-<meta property="og:image" content="https://linksy-ruddy.vercel.app/og-image.png" />
+<meta
+    property="og:description"
+    content="A simple and powerful Bookmark Manager to organize folders, save URLs, search bookmarks, and share collections."
+/>
+<meta
+    property="og:image"
+    content="https://linksy-ruddy.vercel.app/og-image.png"
+/>
 ```
 
 ---
