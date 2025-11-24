@@ -16,6 +16,7 @@ import { AlertDeleteDialog } from './AlertDeleteDialog'
 import { useState, useMemo } from 'react'
 import { EditFolderDialog } from './EditFolderDialog'
 import { useBookmarkStore } from '@/stores/bookmarkStore'
+import { useFolderStore } from '@/stores/folderStore'
 
 type Props = {
     data: FolderResponse
@@ -24,6 +25,8 @@ type Props = {
 }
 
 export function FolderCard({ data, onAddBookmark, onClick }: Props) {
+    const { deleteFolder } = useFolderStore()
+
     const FolderIcon = ICON_MAP[data.icon]
     const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState<boolean>(false)
     const [targetFolderId, setTargetFolderId] = useState<string>('')
@@ -122,7 +125,7 @@ export function FolderCard({ data, onAddBookmark, onClick }: Props) {
                 </CardHeader>
 
                 <CardContent className="mt-3 space-y-3 p-0 sm:mt-4 sm:space-y-4">
-                    <p className="text-muted-foreground line-clamp-2 text-xs break-words sm:text-sm">
+                    <p className="text-muted-foreground line-clamp-2 text-xs wrap-break-word sm:text-sm">
                         {data?.description || 'No description'}
                     </p>
                     <Button
@@ -142,9 +145,7 @@ export function FolderCard({ data, onAddBookmark, onClick }: Props) {
                 isOpen={isOpenDeleteDialog}
                 setIsOpen={setIsOpenDeleteDialog}
                 onConfirm={() => {
-                    // Implement folder delete logic here or pass handler
-                    // For now just console log as placeholder if not implemented in this task
-                    console.log('Delete folder', targetFolderId)
+                    deleteFolder(targetFolderId)
                 }}
             />
             <EditFolderDialog
