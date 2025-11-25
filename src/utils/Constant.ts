@@ -52,3 +52,10 @@ export const FOLDER_ACTION = {
     DELETE_FOLDER: 'delete_folder',
     FETCH_FOLDER: 'fetch_folder',
 }
+
+export const BOOKMARK_ACTION = {
+    ADD_NEW_BOOKMARK: 'add_new_bookmark',
+    UPDATE_BOOKMARK: 'update_bookmark',
+    DELETE_BOOKMARK: 'delete_bookmark',
+    FETCH_BOOKMARK: 'fetch_bookmark',
+}

@@ -17,19 +17,18 @@ import type { BookmarkResponse } from '@/types'
 import { useBookmarkStore } from '@/stores/bookmarkStore'
 import { useFolderStore } from '@/stores/folderStore'
 import { LoadingSpinner } from '@/components/LoadingSpinner'
-import { bookmarkService } from '@/services/bookmarkService'
-import { toast } from 'sonner'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useSearchParams } from 'react-router-dom'
+import { BOOKMARK_ACTION } from '@/utils/Constant'
 
 const BookmarkPage = () => {
     const [searchParams] = useSearchParams()
     const initialFolderId = searchParams.get('folder') || 'all'
 
     const [isCreateBookmark, setIsCreateBookmark] = useState<boolean>(false)
-    const { bookmarks, loading, addBookmark, fetchBookmarks } =
+    const { bookmarks, loading, addBookmark, deleteBookmark, actionType } =
         useBookmarkStore()
-    const { folders, fetchAllFolder } = useFolderStore()
+    const { folders } = useFolderStore()
 
     const [searchQuery, setSearchQuery] = useState('')
     const [sortOption, setSortOption] = useState('date-newest')
@@ -47,11 +46,6 @@ const BookmarkPage = () => {
             setSelectedFolderId(folderParam)
         }
     }, [searchParams])
-
-    useEffect(() => {
-        fetchBookmarks()
-        fetchAllFolder()
-    }, [fetchBookmarks, fetchAllFolder])
 
     const filteredBookmarks = useMemo(() => {
         let result = [...bookmarks]
@@ -92,14 +86,7 @@ const BookmarkPage = () => {
     }, [bookmarks, selectedFolderId, searchQuery, sortOption])
 
     const handleDeleteBookmark = async (id: string) => {
-        try {
-            await bookmarkService.deleteBookmark(id)
-            toast.success('Bookmark deleted')
-            fetchBookmarks() // Refresh list
-        } catch (error) {
-            console.error(error)
-            toast.error('Failed to delete bookmark')
-        }
+        await deleteBookmark(id)
     }
 
     return (
@@ -218,10 +205,8 @@ const BookmarkPage = () => {
                 </div>
             </div>
 
-            {loading ? (
-                <div className="flex h-40 items-center justify-center">
-                    <LoadingSpinner />
-                </div>
+            {loading && actionType === BOOKMARK_ACTION.FETCH_BOOKMARK ? (
+                <LoadingSpinner />
             ) : (
                 <motion.div
                     className="grid min-w-0 grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-6"
@@ -230,9 +215,9 @@ const BookmarkPage = () => {
                     transition={{ duration: 0.2 }}
                 >
                     <AnimatePresence mode="popLayout">
-                        {filteredBookmarks.map((bookmark) => (
+                        {filteredBookmarks.map((item) => (
                             <motion.div
-                                key={bookmark.id}
+                                key={item.id}
                                 layout
                                 initial={{ opacity: 0, scale: 0.9 }}
                                 animate={{ opacity: 1, scale: 1 }}
@@ -240,7 +225,7 @@ const BookmarkPage = () => {
                                 transition={{ duration: 0.2 }}
                             >
                                 <BookmarkCard
-                                    bookmark={bookmark}
+                                    bookmark={item}
                                     onDelete={handleDeleteBookmark}
                                     onClick={(b) => {
                                         setSelectedBookmark(b)

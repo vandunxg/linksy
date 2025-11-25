@@ -1,40 +1,23 @@
 import { create } from 'zustand'
 import { toast } from 'sonner'
 import type {
-    BookmarkResponse,
+    BookmarkState,
     CreateBookmarkRequest,
     UpdateBookmarkRequest,
 } from '@/types'
 import { bookmarkService } from '@/services/bookmarkService'
-
-interface BookmarkState {
-    bookmarks: BookmarkResponse[]
-    loading: boolean
-    fetchBookmarks: (folderId?: string, force?: boolean) => Promise<void>
-    addBookmark: (request: CreateBookmarkRequest) => Promise<BookmarkResponse>
-    updateBookmark: (
-        request: UpdateBookmarkRequest
-    ) => Promise<BookmarkResponse>
-    deleteBookmark: (id: string) => Promise<void>
-}
+import { BOOKMARK_ACTION } from '@/utils/Constant'
 
 export const useBookmarkStore = create<BookmarkState>()((set, get) => ({
     bookmarks: [],
     loading: false,
+    actionType: '',
 
     fetchBookmarks: async (folderId?: string, force = false) => {
-        // Simple caching: if we have bookmarks and not forced, don't fetch
-        // Note: This is a basic cache. For folder-specific fetching, we might need a map or just refetch if folderId changes.
-        // For now, assuming we want to load all bookmarks or refresh.
-        // If folderId is provided, we probably want to filter or fetch specific ones.
-        // Given the current requirement is just "optimize", let's check if we have data.
-
-        // However, if folderId changes, we MUST fetch.
-        // Let's keep it simple: if no folderId (all bookmarks) and we have data, skip.
         if (!force && !folderId && get().bookmarks.length > 0) {
             return
         }
-
+        set({ actionType: BOOKMARK_ACTION.FETCH_BOOKMARK })
         set({ loading: true })
         try {
             const data = await bookmarkService.getBookmarks(folderId)
@@ -44,11 +27,13 @@ export const useBookmarkStore = create<BookmarkState>()((set, get) => ({
             toast.error('Failed to fetch bookmarks')
         } finally {
             set({ loading: false })
+            set({ actionType: '' })
         }
     },
 
     addBookmark: async (request: CreateBookmarkRequest) => {
         try {
+            set({ actionType: BOOKMARK_ACTION.ADD_NEW_BOOKMARK })
             const newBookmark = await bookmarkService.createBookmark(request)
             set((state) => ({ bookmarks: [newBookmark, ...state.bookmarks] }))
             toast.success('Bookmark added successfully')
@@ -57,11 +42,14 @@ export const useBookmarkStore = create<BookmarkState>()((set, get) => ({
             console.error('Error adding bookmark:', err)
             toast.error('Failed to add bookmark')
             throw err
+        } finally {
+            set({ actionType: '' })
         }
     },
 
     updateBookmark: async (request: UpdateBookmarkRequest) => {
         try {
+            set({ actionType: BOOKMARK_ACTION.UPDATE_BOOKMARK })
             const updatedBookmark =
                 await bookmarkService.updateBookmark(request)
             set((state) => ({
@@ -75,20 +63,29 @@ export const useBookmarkStore = create<BookmarkState>()((set, get) => ({
             console.error('Error updating bookmark:', err)
             toast.error('Failed to update bookmark')
             throw err
+        } finally {
+            set({ actionType: '' })
         }
     },
 
     deleteBookmark: async (id: string) => {
         try {
+            set({ actionType: BOOKMARK_ACTION.DELETE_BOOKMARK })
             await bookmarkService.deleteBookmark(id)
-            set((state) => ({
-                bookmarks: state.bookmarks.filter((b) => b.id !== id),
-            }))
+
+            const bookmarksAfterDeleted = get().bookmarks.filter(
+                (item) => item.id != id
+            )
+
+            set({ bookmarks: [...bookmarksAfterDeleted] })
+
             toast.success('Bookmark deleted successfully')
         } catch (err) {
             console.error('Error deleting bookmark:', err)
             toast.error('Failed to delete bookmark')
             throw err
+        } finally {
+            set({ actionType: '' })
         }
     },
 }))

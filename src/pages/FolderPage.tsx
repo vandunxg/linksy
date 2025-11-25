@@ -15,7 +15,7 @@ import {
 import { useFolderStore } from '@/stores/folderStore'
 import { useBookmarkStore } from '@/stores/bookmarkStore'
 import { Plus, Search, ArrowUpDown } from 'lucide-react'
-import { useEffect, useState, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FOLDER_ACTION } from '@/utils/Constant'
 import { useNavigate } from 'react-router-dom'
@@ -25,16 +25,12 @@ const FolderPage = () => {
     const [isAddBookmarkOpen, setIsAddBookmarkOpen] = useState<boolean>(false)
     const [targetFolderId, setTargetFolderId] = useState<string>('')
 
-    const { folders, fetchAllFolder, loading, actionType } = useFolderStore()
+    const { folders, loading, actionType } = useFolderStore()
     const { addBookmark } = useBookmarkStore()
 
     const [searchQuery, setSearchQuery] = useState('')
     const [sortBy, setSortBy] = useState('newest')
     const navigate = useNavigate()
-
-    useEffect(() => {
-        fetchAllFolder()
-    }, [fetchAllFolder])
 
     const filteredFolders = useMemo(() => {
         let result = [...folders]

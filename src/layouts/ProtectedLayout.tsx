@@ -11,10 +11,20 @@ import {
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { ROUTES } from '@/utils/routes'
 import { useEffect } from 'react'
+import { useBookmarkStore } from '@/stores/bookmarkStore'
+import { useFolderStore } from '@/stores/folderStore'
 
 const ProtectedLayout = () => {
     const { user } = useAuthStore()
     const navigate = useNavigate()
+
+    const { fetchBookmarks } = useBookmarkStore()
+    const { fetchAllFolder } = useFolderStore()
+
+    useEffect(() => {
+        fetchBookmarks()
+        fetchAllFolder()
+    }, [fetchAllFolder, fetchBookmarks])
 
     useEffect(() => {
         if (location.pathname === '/admin') {

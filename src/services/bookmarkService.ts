@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabase'
+import { useAuthStore } from '@/stores/authStore'
 import type {
     BookmarkResponse,
     CreateBookmarkRequest,
@@ -9,6 +10,9 @@ export const bookmarkService = {
     async createBookmark(
         request: CreateBookmarkRequest
     ): Promise<BookmarkResponse> {
+        const user = useAuthStore.getState().user
+        if (!user) throw new Error('No user in store')
+
         const { data, error } = await supabase
             .from('bookmark')
             .insert([
@@ -17,7 +21,7 @@ export const bookmarkService = {
                     url: request.url,
                     description: request.description,
                     folder_id: request.folder_id,
-                    user_id: (await supabase.auth.getUser()).data.user?.id,
+                    user_id: user.id,
                 },
             ])
             .select('*')
@@ -34,9 +38,7 @@ export const bookmarkService = {
             .select('*')
             .order('created_at', { ascending: false })
 
-        if (folderId) {
-            query = query.eq('folder_id', folderId)
-        }
+        if (folderId) query = query.eq('folder_id', folderId)
 
         const { data, error } = await query
 
@@ -48,6 +50,9 @@ export const bookmarkService = {
     async updateBookmark(
         request: UpdateBookmarkRequest
     ): Promise<BookmarkResponse> {
+        const user = useAuthStore.getState().user
+        if (!user) throw new Error('No user in store')
+
         const { data, error } = await supabase
             .from('bookmark')
             .update({
@@ -57,6 +62,7 @@ export const bookmarkService = {
                 folder_id: request.folder_id,
             })
             .eq('id', request.id)
+            .eq('user_id', user.id) // đảm bảo đúng RLS của bạn
             .select('*')
             .single()
 
@@ -66,7 +72,14 @@ export const bookmarkService = {
     },
 
     async deleteBookmark(id: string): Promise<void> {
-        const { error } = await supabase.from('bookmark').delete().eq('id', id)
+        const user = useAuthStore.getState().user
+        if (!user) throw new Error('No user in store')
+
+        const { error } = await supabase
+            .from('bookmark')
+            .delete()
+            .eq('id', id)
+            .eq('user_id', user.id)
 
         if (error) throw error
     },

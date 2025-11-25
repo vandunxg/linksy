@@ -50,6 +50,18 @@ export interface FolderState {
     loading: boolean
 }
 
+export interface BookmarkState {
+    actionType: string
+    bookmarks: BookmarkResponse[]
+    loading: boolean
+    fetchBookmarks: (folderId?: string, force?: boolean) => Promise<void>
+    addBookmark: (request: CreateBookmarkRequest) => Promise<BookmarkResponse>
+    updateBookmark: (
+        request: UpdateBookmarkRequest
+    ) => Promise<BookmarkResponse>
+    deleteBookmark: (id: string) => Promise<void>
+}
+
 export interface BookmarkResponse {
     id: string
     title: string
