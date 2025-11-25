@@ -4,12 +4,14 @@ import { Input } from '@/components/ui/input'
 import { useBookmarkStore } from '@/stores/bookmarkStore'
 import { useFolderStore } from '@/stores/folderStore'
 import { ICON_MAP } from '@/utils/Constant'
-import { Search } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
+import { Search, Loader2 } from 'lucide-react'
+import { useEffect, useMemo, useState, useRef, useCallback } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { BookmarkDetailDialog } from '@/components/BookmarkDetailDialog'
 import type { BookmarkResponse } from '@/types'
+
+const ITEMS_PER_PAGE = 20
 
 const PublicPage = () => {
     const { bookmarks, fetchBookmarks, loading } = useBookmarkStore()
@@ -24,9 +26,18 @@ const PublicPage = () => {
     const folderId = searchParams.get('folder')
     const currentFolder = folders.find((f) => f.id === folderId)
 
+    // Pagination State
+    const [page, setPage] = useState(1)
+    const observerTarget = useRef<HTMLDivElement>(null)
+
     useEffect(() => {
         fetchBookmarks()
     }, [fetchBookmarks])
+
+    // Reset page when filters change
+    useEffect(() => {
+        setPage(1)
+    }, [searchQuery, folderId])
 
     const filteredBookmarks = useMemo(() => {
         let result = [...bookmarks]
@@ -47,6 +58,51 @@ const PublicPage = () => {
 
         return result
     }, [bookmarks, folderId, searchQuery])
+
+    const displayedBookmarks = useMemo(() => {
+        return filteredBookmarks.slice(0, page * ITEMS_PER_PAGE)
+    }, [filteredBookmarks, page])
+
+    const hasMore = displayedBookmarks.length < filteredBookmarks.length
+
+    const handleObserver = useCallback(
+        (entries: IntersectionObserverEntry[]) => {
+            const [target] = entries
+            if (target.isIntersecting && hasMore) {
+                setPage((prev) => prev + 1)
+            }
+        },
+        [hasMore]
+    )
+
+    useEffect(() => {
+        const element = observerTarget.current
+        if (!element) return
+
+        const observer = new IntersectionObserver(handleObserver, {
+            root: null,
+            rootMargin: '20px',
+            threshold: 0,
+        })
+
+        observer.observe(element)
+        return () => observer.disconnect()
+    }, [handleObserver])
+
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.05,
+            },
+        },
+    }
+
+    const itemVariants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: { opacity: 1, y: 0 },
+    }
 
     return (
         <motion.div
@@ -91,34 +147,38 @@ const PublicPage = () => {
                     <LoadingSpinner />
                 </div>
             ) : (
-                <motion.div
-                    className="grid min-w-0 grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-6"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.2 }}
-                >
-                    <AnimatePresence mode="popLayout">
-                        {filteredBookmarks.map((bookmark) => (
-                            <motion.div
-                                key={bookmark.id}
-                                layout
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.9 }}
-                                transition={{ duration: 0.2 }}
-                            >
-                                <BookmarkCard
-                                    bookmark={bookmark}
-                                    isPublic={true}
-                                    onDelete={() => {}}
-                                    onClick={(b) => {
-                                        setSelectedBookmark(b)
-                                        setIsDetailOpen(true)
-                                    }}
-                                />
-                            </motion.div>
-                        ))}
-                    </AnimatePresence>
+                <>
+                    <motion.div
+                        className="grid min-w-0 grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-6"
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate="visible"
+                    >
+                        <AnimatePresence mode="popLayout">
+                            {displayedBookmarks.map((bookmark) => (
+                                <motion.div
+                                    key={bookmark.id}
+                                    layout
+                                    variants={itemVariants}
+                                    initial="hidden"
+                                    animate="visible"
+                                    exit={{ opacity: 0, scale: 0.9 }}
+                                    transition={{ duration: 0.2 }}
+                                >
+                                    <BookmarkCard
+                                        bookmark={bookmark}
+                                        isPublic={true}
+                                        onDelete={() => {}}
+                                        onClick={(b) => {
+                                            setSelectedBookmark(b)
+                                            setIsDetailOpen(true)
+                                        }}
+                                    />
+                                </motion.div>
+                            ))}
+                        </AnimatePresence>
+                    </motion.div>
+
                     {filteredBookmarks.length === 0 && (
                         <motion.div
                             initial={{ opacity: 0 }}
@@ -128,7 +188,17 @@ const PublicPage = () => {
                             No bookmarks found.
                         </motion.div>
                     )}
-                </motion.div>
+
+                    {/* Infinite Scroll Trigger & Loading Indicator */}
+                    {hasMore && (
+                        <div
+                            ref={observerTarget}
+                            className="flex justify-center py-8"
+                        >
+                            <Loader2 className="text-primary h-6 w-6 animate-spin" />
+                        </div>
+                    )}
+                </>
             )}
 
             <BookmarkDetailDialog

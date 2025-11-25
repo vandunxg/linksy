@@ -17,6 +17,7 @@ import { useState, useMemo } from 'react'
 import { EditFolderDialog } from './EditFolderDialog'
 import { useBookmarkStore } from '@/stores/bookmarkStore'
 import { useFolderStore } from '@/stores/folderStore'
+import { toast } from 'sonner'
 
 type Props = {
     data: FolderResponse
@@ -111,6 +112,14 @@ export function FolderCard({ data, onAddBookmark, onClick }: Props) {
                                     <DropdownMenuItem
                                         onClick={(e) => {
                                             e.stopPropagation()
+
+                                            if (bookmarkCount > 0) {
+                                                toast.error(
+                                                    'Folder has bookmarks, cannot delete'
+                                                )
+                                                return
+                                            }
+
                                             setIsOpenDeleteDialog(true)
                                             setTargetFolderId(data.id)
                                         }}

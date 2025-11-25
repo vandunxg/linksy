@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabase'
+import { useAuthStore } from '@/stores/authStore'
 import type {
     CreateFolderRequest,
     FolderResponse,
@@ -9,6 +10,8 @@ export const folderService = {
     async createFolder(
         request: CreateFolderRequest
     ): Promise<FolderResponse[]> {
+        const user = useAuthStore.getState().user
+        if (!user) throw new Error('No user in store')
         const { data, error } = await supabase
             .from('bookmark_folder')
             .insert([
@@ -16,7 +19,7 @@ export const folderService = {
                     name: request.name,
                     description: request.description ?? '',
                     icon: request.icon ?? 'folder',
-                    user_id: null,
+                    user_id: user.id,
                     is_public: true,
                     created_at: new Date(),
                 },
@@ -41,18 +44,26 @@ export const folderService = {
     },
 
     async deleteFolderById(id: string) {
+        const user = useAuthStore.getState().user
+        if (!user) throw new Error('No user in store')
+
         const { error } = await supabase
             .from('bookmark_folder')
             .delete()
             .eq('id', id)
+            .eq('user_id', user.id)
 
         if (error) throw error
     },
 
     async getRecentFolders(): Promise<FolderResponse[]> {
+        const user = useAuthStore.getState().user
+        if (!user) throw new Error('No user in store')
+
         const { data, error } = await supabase
             .from('bookmark_folder')
             .select('*')
+            .eq('user_id', user.id)
             .order('created_at', { ascending: false })
             .limit(5)
 
@@ -62,6 +73,9 @@ export const folderService = {
     },
 
     async updateFolder(request: UpdateFolderRequest): Promise<FolderResponse> {
+        const user = useAuthStore.getState().user
+        if (!user) throw new Error('No user in store')
+
         const { data, error } = await supabase
             .from('bookmark_folder')
             .update({
@@ -69,6 +83,7 @@ export const folderService = {
                 description: request.description ?? '',
                 icon: request.icon ?? 'folder',
             })
+            .eq('user_id', user.id)
             .eq('id', request.id)
             .select('*')
 

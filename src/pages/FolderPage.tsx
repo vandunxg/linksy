@@ -14,11 +14,13 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useFolderStore } from '@/stores/folderStore'
 import { useBookmarkStore } from '@/stores/bookmarkStore'
-import { Plus, Search, ArrowUpDown } from 'lucide-react'
-import { useState, useMemo } from 'react'
+import { Plus, Search, ArrowUpDown, Loader2 } from 'lucide-react'
+import { useState, useMemo, useRef, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FOLDER_ACTION } from '@/utils/Constant'
 import { useNavigate } from 'react-router-dom'
+
+const ITEMS_PER_PAGE = 20
 
 const FolderPage = () => {
     const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
@@ -31,6 +33,15 @@ const FolderPage = () => {
     const [searchQuery, setSearchQuery] = useState('')
     const [sortBy, setSortBy] = useState('newest')
     const navigate = useNavigate()
+
+    // Pagination State
+    const [page, setPage] = useState(1)
+    const observerTarget = useRef<HTMLDivElement>(null)
+
+    // Reset page when filters change
+    useEffect(() => {
+        setPage(1)
+    }, [searchQuery, sortBy])
 
     const filteredFolders = useMemo(() => {
         let result = [...folders]
@@ -66,6 +77,36 @@ const FolderPage = () => {
         return result
     }, [folders, searchQuery, sortBy])
 
+    const displayedFolders = useMemo(() => {
+        return filteredFolders.slice(0, page * ITEMS_PER_PAGE)
+    }, [filteredFolders, page])
+
+    const hasMore = displayedFolders.length < filteredFolders.length
+
+    const handleObserver = useCallback(
+        (entries: IntersectionObserverEntry[]) => {
+            const [target] = entries
+            if (target.isIntersecting && hasMore) {
+                setPage((prev) => prev + 1)
+            }
+        },
+        [hasMore]
+    )
+
+    useEffect(() => {
+        const element = observerTarget.current
+        if (!element) return
+
+        const observer = new IntersectionObserver(handleObserver, {
+            root: null,
+            rootMargin: '20px',
+            threshold: 0,
+        })
+
+        observer.observe(element)
+        return () => observer.disconnect()
+    }, [handleObserver])
+
     const handleAddBookmark = (folderId: string) => {
         setTargetFolderId(folderId)
         setIsAddBookmarkOpen(true)
@@ -74,6 +115,24 @@ const FolderPage = () => {
     const handleFolderClick = (folderId: string) => {
         navigate(`/admin/bookmarks?folder=${folderId}`)
     }
+
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.05,
+            },
+        },
+    }
+
+    const itemVariants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: { opacity: 1, y: 0 },
+    }
+
+    const isInitialLoading =
+        loading && actionType === FOLDER_ACTION.FETCH_FOLDER
 
     return (
         <>
@@ -143,33 +202,39 @@ const FolderPage = () => {
                     </div>
                 </div>
 
-                {loading && actionType === FOLDER_ACTION.FETCH_FOLDER ? (
-                    <LoadingSpinner />
+                {isInitialLoading ? (
+                    <div className="flex h-60 items-center justify-center">
+                        <LoadingSpinner />
+                    </div>
                 ) : (
-                    <motion.div
-                        className="grid min-w-0 grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-6"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.2 }}
-                    >
-                        <AnimatePresence mode="popLayout">
-                            {filteredFolders.map((item) => (
-                                <motion.div
-                                    key={item.id}
-                                    layout
-                                    initial={{ opacity: 0, scale: 0.9 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.9 }}
-                                    transition={{ duration: 0.2 }}
-                                >
-                                    <FolderCard
-                                        data={item}
-                                        onAddBookmark={handleAddBookmark}
-                                        onClick={handleFolderClick}
-                                    />
-                                </motion.div>
-                            ))}
-                        </AnimatePresence>
+                    <>
+                        <motion.div
+                            className="grid min-w-0 grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-6"
+                            variants={containerVariants}
+                            initial="hidden"
+                            animate="visible"
+                        >
+                            <AnimatePresence mode="popLayout">
+                                {displayedFolders.map((item) => (
+                                    <motion.div
+                                        key={item.id}
+                                        layout
+                                        variants={itemVariants}
+                                        initial="hidden"
+                                        animate="visible"
+                                        exit={{ opacity: 0, scale: 0.9 }}
+                                        transition={{ duration: 0.2 }}
+                                    >
+                                        <FolderCard
+                                            data={item}
+                                            onAddBookmark={handleAddBookmark}
+                                            onClick={handleFolderClick}
+                                        />
+                                    </motion.div>
+                                ))}
+                            </AnimatePresence>
+                        </motion.div>
+
                         {filteredFolders.length === 0 && (
                             <motion.div
                                 initial={{ opacity: 0 }}
@@ -179,7 +244,17 @@ const FolderPage = () => {
                                 No folders found matching your search.
                             </motion.div>
                         )}
-                    </motion.div>
+
+                        {/* Infinite Scroll Trigger & Loading Indicator */}
+                        {hasMore && (
+                            <div
+                                ref={observerTarget}
+                                className="flex justify-center py-8"
+                            >
+                                <Loader2 className="text-primary h-6 w-6 animate-spin" />
+                            </div>
+                        )}
+                    </>
                 )}
             </div>
 
