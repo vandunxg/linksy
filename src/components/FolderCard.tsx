@@ -1,4 +1,4 @@
-import { MoreHorizontal, Pencil, Plus, Trash2 } from 'lucide-react'
+import { MoreHorizontal, Pencil, Plus, Trash2, Globe } from 'lucide-react'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 
@@ -76,6 +76,11 @@ export function FolderCard({ data, onAddBookmark, onClick }: Props) {
                                     {bookmarkCount === 1
                                         ? 'bookmark'
                                         : 'bookmarks'}
+                                    {data.is_public && (
+                                        <span className="ml-2 inline-flex items-center gap-1 text-xs text-blue-500">
+                                            <Globe size={12} /> Public
+                                        </span>
+                                    )}
                                 </p>
                             </div>
                         </div>

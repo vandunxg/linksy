@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import { Switch } from '@/components/ui/switch'
 import { Button } from '@/components/ui/button'
 import { useFolderStore } from '@/stores/folderStore'
 import {
@@ -35,6 +36,7 @@ const bookmarkSchema = z.object({
     url: z.string().url(),
     folderId: z.string().nullable().optional(),
     description: z.string().optional(),
+    isPublic: z.boolean().optional(),
 })
 
 type BookmarkFormType = z.infer<typeof bookmarkSchema>
@@ -52,13 +54,7 @@ export function AddBookmarkDialog({
     onAddBookmark,
     defaultFolderId,
 }: Props) {
-    const { folders, fetchAllFolder } = useFolderStore()
-
-    // Load folders when dialog opens
-    useEffect(() => {
-        if (isOpen) fetchAllFolder()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isOpen])
+    const { folders } = useFolderStore()
 
     const form = useForm<BookmarkFormType>({
         resolver: zodResolver(bookmarkSchema),
@@ -67,6 +63,7 @@ export function AddBookmarkDialog({
             description: '',
             url: '',
             folderId: defaultFolderId ?? null,
+            isPublic: false,
         },
     })
 
@@ -84,6 +81,7 @@ export function AddBookmarkDialog({
                 url: values.url,
                 description: values.description,
                 folder_id: values.folderId ?? undefined,
+                is_public: values.isPublic,
             })
 
             form.reset()
@@ -174,6 +172,30 @@ export function AddBookmarkDialog({
                                         />
                                     </FormControl>
                                     <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="isPublic"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                                    <div className="space-y-0.5">
+                                        <FormLabel className="text-base">
+                                            Public
+                                        </FormLabel>
+                                        <DialogDescription>
+                                            Make this bookmark public for
+                                            everyone to see.
+                                        </DialogDescription>
+                                    </div>
+                                    <FormControl>
+                                        <Switch
+                                            checked={field.value}
+                                            onCheckedChange={field.onChange}
+                                        />
+                                    </FormControl>
                                 </FormItem>
                             )}
                         />

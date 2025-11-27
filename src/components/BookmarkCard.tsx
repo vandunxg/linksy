@@ -1,4 +1,4 @@
-import { ExternalLink, MoreVertical, Trash2, Pencil } from 'lucide-react'
+import { ExternalLink, MoreVertical, Trash2, Pencil, Globe } from 'lucide-react'
 import { Card, CardHeader } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 
@@ -98,6 +98,11 @@ export function BookmarkCard({
                     <div className="text-muted-foreground text-xs">
                         {/* 1234 visits - Placeholder for now */}
                         {new Date(bookmark.created_at).toLocaleDateString()}
+                        {bookmark.is_public && (
+                            <span className="ml-2 inline-flex items-center gap-1 text-blue-500">
+                                <Globe size={12} /> Public
+                            </span>
+                        )}
                     </div>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>

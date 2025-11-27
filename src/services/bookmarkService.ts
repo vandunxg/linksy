@@ -14,7 +14,7 @@ export const bookmarkService = {
         if (!user) throw new Error('No user in store')
 
         const { data, error } = await supabase
-            .from('bookmark')
+            .from('bookmarks')
             .insert([
                 {
                     title: request.title,
@@ -22,6 +22,7 @@ export const bookmarkService = {
                     description: request.description,
                     folder_id: request.folder_id,
                     user_id: user.id,
+                    is_public: request.is_public ?? false,
                 },
             ])
             .select('*')
@@ -34,8 +35,24 @@ export const bookmarkService = {
 
     async getBookmarks(folderId?: string): Promise<BookmarkResponse[]> {
         let query = supabase
-            .from('bookmark')
+            .from('bookmarks')
             .select('*')
+            .order('created_at', { ascending: false })
+
+        if (folderId) query = query.eq('folder_id', folderId)
+
+        const { data, error } = await query
+
+        if (error) throw error
+
+        return data
+    },
+
+    async getPublicBookmarks(folderId?: string): Promise<BookmarkResponse[]> {
+        let query = supabase
+            .from('bookmarks')
+            .select('*')
+            .eq('is_public', true)
             .order('created_at', { ascending: false })
 
         if (folderId) query = query.eq('folder_id', folderId)
@@ -54,12 +71,13 @@ export const bookmarkService = {
         if (!user) throw new Error('No user in store')
 
         const { data, error } = await supabase
-            .from('bookmark')
+            .from('bookmarks')
             .update({
                 title: request.title,
                 url: request.url,
                 description: request.description,
                 folder_id: request.folder_id,
+                is_public: request.is_public,
             })
             .eq('id', request.id)
             .eq('user_id', user.id) // đảm bảo đúng RLS của bạn
@@ -76,7 +94,7 @@ export const bookmarkService = {
         if (!user) throw new Error('No user in store')
 
         const { error } = await supabase
-            .from('bookmark')
+            .from('bookmarks')
             .delete()
             .eq('id', id)
             .eq('user_id', user.id)

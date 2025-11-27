@@ -20,13 +20,13 @@ import { ICON_MAP } from '@/utils/Constant'
 export function PublicSidebar({
     ...props
 }: React.ComponentProps<typeof Sidebar>) {
-    const { folders, fetchAllFolder } = useFolderStore()
+    const { publicFolder, fetchPublicFolders } = useFolderStore()
     const [searchParams] = useSearchParams()
     const currentFolderId = searchParams.get('folder')
 
     useEffect(() => {
-        fetchAllFolder()
-    }, [fetchAllFolder])
+        fetchPublicFolders()
+    }, [fetchPublicFolders])
 
     return (
         <Sidebar variant="inset" {...props}>
@@ -67,7 +67,7 @@ export function PublicSidebar({
                                     </Link>
                                 </SidebarMenuButton>
                             </SidebarMenuItem>
-                            {folders.map((folder) => {
+                            {publicFolder.map((folder) => {
                                 const Icon = ICON_MAP[folder.icon]
                                 return (
                                     <SidebarMenuItem key={folder.id}>

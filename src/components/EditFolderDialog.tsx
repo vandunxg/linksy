@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import { Switch } from '@/components/ui/switch'
 import { FOLDER_ICON } from '@/utils/Constant'
 import { useFolderStore } from '@/stores/folderStore'
 import {
@@ -37,6 +38,7 @@ const folderSchema = z.object({
     icon: z.string().min(1, {
         message: 'Please select an icon.',
     }),
+    isPublic: z.boolean().optional(),
 })
 
 type FolderFormType = z.infer<typeof folderSchema>
@@ -54,6 +56,7 @@ export function EditFolderDialog({ folder, isOpen, setIsOpen }: Props) {
             name: '',
             description: '',
             icon: '',
+            isPublic: false,
         },
     })
 
@@ -63,6 +66,7 @@ export function EditFolderDialog({ folder, isOpen, setIsOpen }: Props) {
                 name: folder.name ?? '',
                 description: folder.description ?? '',
                 icon: folder.icon ?? 'folder',
+                isPublic: folder.is_public ?? false,
             })
         }
     }, [folder, form])
@@ -75,6 +79,7 @@ export function EditFolderDialog({ folder, isOpen, setIsOpen }: Props) {
             name: values.name,
             description: values.description && '',
             icon: values.icon,
+            is_public: values.isPublic,
         })
 
         setIsOpen(false)
@@ -126,6 +131,30 @@ export function EditFolderDialog({ folder, isOpen, setIsOpen }: Props) {
                                         />
                                     </FormControl>
                                     <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="isPublic"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                                    <div className="space-y-0.5">
+                                        <FormLabel className="text-base">
+                                            Public
+                                        </FormLabel>
+                                        <DialogDescription>
+                                            Make this folder public for everyone
+                                            to see.
+                                        </DialogDescription>
+                                    </div>
+                                    <FormControl>
+                                        <Switch
+                                            checked={field.value}
+                                            onCheckedChange={field.onChange}
+                                        />
+                                    </FormControl>
                                 </FormItem>
                             )}
                         />

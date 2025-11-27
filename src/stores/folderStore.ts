@@ -11,10 +11,34 @@ import { FOLDER_ACTION } from '@/utils/Constant'
 
 export const useFolderStore = create<FolderState>()((set, get) => ({
     folders: [],
+    publicFolder: [],
     recentFolders: [],
     loading: false,
     reloadRecentFolder: false,
     actionType: '',
+
+    fetchPublicFolders: async () => {
+        console.log('[fetchPublicFolders]')
+
+        if (get().folders.length > 0) return
+
+        set({ actionType: FOLDER_ACTION.FETCH_FOLDER })
+        set({ loading: true })
+
+        try {
+            const folders = await folderService.fetchPublicFolders()
+
+            console.log('[fetchPublicFolders]', folders)
+
+            set({ publicFolder: folders })
+        } catch (err) {
+            console.log(err)
+
+            toast.error(`Can't fetch folders.`)
+        } finally {
+            set({ loading: false })
+        }
+    },
 
     updateFolder: async (request: UpdateFolderRequest) => {
         set({ actionType: FOLDER_ACTION.UPDATE_FOLDER })
@@ -40,13 +64,15 @@ export const useFolderStore = create<FolderState>()((set, get) => ({
     },
 
     fetchAllFolder: async () => {
+        console.log('[fetchAllFolder]')
+
         if (get().folders.length > 0) return
 
         set({ actionType: FOLDER_ACTION.FETCH_FOLDER })
         set({ loading: true })
 
         try {
-            const folders = await folderService.fetchPublicFolders()
+            const folders = await folderService.fetchFolders()
 
             set({ folders })
         } catch (err) {

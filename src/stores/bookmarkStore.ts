@@ -10,8 +10,27 @@ import { BOOKMARK_ACTION } from '@/utils/Constant'
 
 export const useBookmarkStore = create<BookmarkState>()((set, get) => ({
     bookmarks: [],
+    publicBookmarks: [],
     loading: false,
     actionType: '',
+
+    fetchPublicBookmarks: async (folderId?: string, force = false) => {
+        if (!force && !folderId && get().bookmarks.length > 0) {
+            return
+        }
+        set({ actionType: BOOKMARK_ACTION.FETCH_BOOKMARK })
+        set({ loading: true })
+        try {
+            const data = await bookmarkService.getPublicBookmarks(folderId)
+            set({ publicBookmarks: data })
+        } catch (err) {
+            console.error('Error fetching bookmarks:', err)
+            toast.error('Failed to fetch bookmarks')
+        } finally {
+            set({ loading: false })
+            set({ actionType: '' })
+        }
+    },
 
     fetchBookmarks: async (folderId?: string, force = false) => {
         if (!force && !folderId && get().bookmarks.length > 0) {

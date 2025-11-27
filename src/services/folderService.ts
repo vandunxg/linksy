@@ -13,14 +13,14 @@ export const folderService = {
         const user = useAuthStore.getState().user
         if (!user) throw new Error('No user in store')
         const { data, error } = await supabase
-            .from('bookmark_folder')
+            .from('folders')
             .insert([
                 {
                     name: request.name,
                     description: request.description ?? '',
                     icon: request.icon ?? 'folder',
                     user_id: user.id,
-                    is_public: true,
+                    is_public: request.is_public ?? false,
                     created_at: new Date(),
                 },
             ])
@@ -33,10 +33,27 @@ export const folderService = {
 
     async fetchPublicFolders(): Promise<FolderResponse[]> {
         const { data, error } = await supabase
-            .from('bookmark_folder')
-            .select('id, name, description, icon, created_at')
+            .from('folders')
+            .select('*')
             .eq('is_public', true)
             .order('created_at', { ascending: false })
+
+        if (error) throw error
+
+        return data
+    },
+
+    async fetchFolders(): Promise<FolderResponse[]> {
+        const user = useAuthStore.getState().user
+        if (!user) throw new Error('No user in store')
+
+        const { data, error } = await supabase
+            .from('folders')
+            .select('*')
+            .eq('user_id', user.id)
+            .order('created_at', { ascending: false })
+
+        console.log(data)
 
         if (error) throw error
 
@@ -48,7 +65,7 @@ export const folderService = {
         if (!user) throw new Error('No user in store')
 
         const { error } = await supabase
-            .from('bookmark_folder')
+            .from('folders')
             .delete()
             .eq('id', id)
             .eq('user_id', user.id)
@@ -61,7 +78,7 @@ export const folderService = {
         if (!user) throw new Error('No user in store')
 
         const { data, error } = await supabase
-            .from('bookmark_folder')
+            .from('folders')
             .select('*')
             .eq('user_id', user.id)
             .order('created_at', { ascending: false })
@@ -77,11 +94,12 @@ export const folderService = {
         if (!user) throw new Error('No user in store')
 
         const { data, error } = await supabase
-            .from('bookmark_folder')
+            .from('folders')
             .update({
                 name: request.name,
                 description: request.description ?? '',
                 icon: request.icon ?? 'folder',
+                is_public: request.is_public,
             })
             .eq('user_id', user.id)
             .eq('id', request.id)

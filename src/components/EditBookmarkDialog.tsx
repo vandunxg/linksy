@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import { Switch } from '@/components/ui/switch'
 import { useFolderStore } from '@/stores/folderStore'
 import { useBookmarkStore } from '@/stores/bookmarkStore'
 import {
@@ -36,6 +37,7 @@ const bookmarkSchema = z.object({
     url: z.string().url(),
     folderId: z.string().optional(),
     description: z.string().optional(),
+    isPublic: z.boolean().optional(),
 })
 
 type BookmarkFormType = z.infer<typeof bookmarkSchema>
@@ -47,14 +49,8 @@ type Props = {
 }
 
 export function EditBookmarkDialog({ isOpen, setIsOpen, bookmark }: Props) {
-    const { folders, fetchAllFolder } = useFolderStore()
+    const { folders } = useFolderStore()
     const { updateBookmark } = useBookmarkStore()
-
-    useEffect(() => {
-        if (isOpen) {
-            fetchAllFolder()
-        }
-    }, [isOpen, fetchAllFolder])
 
     const form = useForm<BookmarkFormType>({
         resolver: zodResolver(bookmarkSchema),
@@ -63,6 +59,7 @@ export function EditBookmarkDialog({ isOpen, setIsOpen, bookmark }: Props) {
             description: bookmark.description || '',
             url: bookmark.url,
             folderId: bookmark.folder_id || '',
+            isPublic: bookmark.is_public ?? false,
         },
     })
 
@@ -74,6 +71,7 @@ export function EditBookmarkDialog({ isOpen, setIsOpen, bookmark }: Props) {
                 description: bookmark.description || '',
                 url: bookmark.url,
                 folderId: bookmark.folder_id || '',
+                isPublic: bookmark.is_public ?? false,
             })
         }
     }, [bookmark, form])
@@ -86,6 +84,7 @@ export function EditBookmarkDialog({ isOpen, setIsOpen, bookmark }: Props) {
                 url: values.url,
                 description: values.description,
                 folder_id: values.folderId || undefined,
+                is_public: values.isPublic,
             })
             setIsOpen(false)
         } catch (error) {
@@ -167,6 +166,31 @@ export function EditBookmarkDialog({ isOpen, setIsOpen, bookmark }: Props) {
                                         />
                                     </FormControl>
                                     <FormMessage />
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="isPublic"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                                    <div className="space-y-0.5">
+                                        <FormLabel className="text-base">
+                                            Public
+                                        </FormLabel>
+                                        <DialogDescription>
+                                            Make this bookmark public for
+                                            everyone to see.
+                                        </DialogDescription>
+                                    </div>
+                                    <FormControl>
+                                        <Switch
+                                            checked={field.value}
+                                            onCheckedChange={field.onChange}
+                                        />
+                                    </FormControl>
                                 </FormItem>
                             )}
                         />

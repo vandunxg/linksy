@@ -22,12 +22,14 @@ export interface FolderResponse {
     description: string | undefined
     icon: string
     created_at: Date
+    is_public: boolean
 }
 
 export interface CreateFolderRequest {
     name: string
     description?: string
     icon: string
+    is_public?: boolean
 }
 
 export interface UpdateFolderRequest {
@@ -35,14 +37,17 @@ export interface UpdateFolderRequest {
     name: string
     description?: string
     icon: string
+    is_public?: boolean
 }
 
 export interface FolderState {
     folders: FolderResponse[]
+    publicFolder: FolderResponse[]
     recentFolders: FolderResponse[]
     reloadRecentFolder: boolean
     actionType: string
     fetchAllFolder: () => void
+    fetchPublicFolders: () => void
     createNewFolder: (request: CreateFolderRequest) => void
     deleteFolder: (id: string) => void
     getRecentFolders: () => void
@@ -53,8 +58,10 @@ export interface FolderState {
 export interface BookmarkState {
     actionType: string
     bookmarks: BookmarkResponse[]
+    publicBookmarks: BookmarkResponse[]
     loading: boolean
     fetchBookmarks: (folderId?: string, force?: boolean) => Promise<void>
+    fetchPublicBookmarks: (folderId?: string, force?: boolean) => Promise<void>
     addBookmark: (request: CreateBookmarkRequest) => Promise<BookmarkResponse>
     updateBookmark: (
         request: UpdateBookmarkRequest
@@ -69,6 +76,7 @@ export interface BookmarkResponse {
     description: string | null
     folder_id: string | null
     created_at: Date
+    is_public: boolean
 }
 
 export interface CreateBookmarkRequest {
@@ -76,6 +84,7 @@ export interface CreateBookmarkRequest {
     url: string
     description?: string
     folder_id?: string
+    is_public?: boolean
 }
 
 export interface UpdateBookmarkRequest {
@@ -84,4 +93,5 @@ export interface UpdateBookmarkRequest {
     url: string
     description?: string
     folder_id?: string
+    is_public?: boolean
 }
