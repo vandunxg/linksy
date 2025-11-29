@@ -26,7 +26,7 @@ type Props = {
 }
 
 export function FolderCard({ data, onAddBookmark, onClick }: Props) {
-    const { deleteFolder } = useFolderStore()
+    const { deleteFolder, loading } = useFolderStore()
 
     const FolderIcon = ICON_MAP[data.icon]
     const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState<boolean>(false)
@@ -161,11 +161,13 @@ export function FolderCard({ data, onAddBookmark, onClick }: Props) {
                 onConfirm={() => {
                     deleteFolder(targetFolderId)
                 }}
+                loading={loading}
             />
             <EditFolderDialog
                 isOpen={isEditFolder}
                 setIsOpen={setIsEditFolder}
                 folder={folderEditTarget}
+                loading={loading}
             />
         </>
     )

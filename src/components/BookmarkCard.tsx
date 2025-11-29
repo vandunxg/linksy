@@ -21,6 +21,7 @@ type Props = {
     onDelete: (id: string) => void
     onClick?: (bookmark: BookmarkResponse) => void
     isPublic?: boolean
+    loading?: boolean
 }
 
 import { EditBookmarkDialog } from './EditBookmarkDialog'
@@ -30,6 +31,7 @@ export function BookmarkCard({
     onDelete,
     onClick,
     isPublic = false,
+    loading,
 }: Props) {
     const webLogo = getWebsiteLogo(bookmark.url)
     const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState<boolean>(false)
@@ -161,11 +163,13 @@ export function BookmarkCard({
                 isOpen={isOpenDeleteDialog}
                 setIsOpen={setIsOpenDeleteDialog}
                 onConfirm={() => onDelete(bookmark.id)}
+                loading={loading}
             />
             <EditBookmarkDialog
                 isOpen={isOpenEditDialog}
                 setIsOpen={setIsOpenEditDialog}
                 bookmark={bookmark}
+                loading={loading}
             />
         </>
     )

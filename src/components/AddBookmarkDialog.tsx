@@ -46,6 +46,7 @@ type Props = {
     setIsOpen: Dispatch<SetStateAction<boolean>>
     onAddBookmark: (request: CreateBookmarkRequest) => Promise<BookmarkResponse>
     defaultFolderId?: string
+    loading?: boolean
 }
 
 export function AddBookmarkDialog({
@@ -53,6 +54,7 @@ export function AddBookmarkDialog({
     setIsOpen,
     onAddBookmark,
     defaultFolderId,
+    loading,
 }: Props) {
     const { folders } = useFolderStore()
 
@@ -207,7 +209,9 @@ export function AddBookmarkDialog({
                                     Cancel
                                 </Button>
                             </DialogClose>
-                            <Button type="submit">Add new bookmark</Button>
+                            <Button disabled={loading} type="submit">
+                                {loading ? 'Adding...' : 'Add new bookmark'}
+                            </Button>
                         </DialogFooter>
                     </form>
                 </Form>

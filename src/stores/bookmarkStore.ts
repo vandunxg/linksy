@@ -53,6 +53,7 @@ export const useBookmarkStore = create<BookmarkState>()((set, get) => ({
     addBookmark: async (request: CreateBookmarkRequest) => {
         try {
             set({ actionType: BOOKMARK_ACTION.ADD_NEW_BOOKMARK })
+            set({ loading: true })
             const newBookmark = await bookmarkService.createBookmark(request)
             set((state) => ({ bookmarks: [newBookmark, ...state.bookmarks] }))
             toast.success('Bookmark added successfully')
@@ -63,11 +64,13 @@ export const useBookmarkStore = create<BookmarkState>()((set, get) => ({
             throw err
         } finally {
             set({ actionType: '' })
+            set({ loading: false })
         }
     },
 
     updateBookmark: async (request: UpdateBookmarkRequest) => {
         try {
+            set({ loading: true })
             set({ actionType: BOOKMARK_ACTION.UPDATE_BOOKMARK })
             const updatedBookmark =
                 await bookmarkService.updateBookmark(request)
@@ -84,14 +87,15 @@ export const useBookmarkStore = create<BookmarkState>()((set, get) => ({
             throw err
         } finally {
             set({ actionType: '' })
+            set({ loading: false })
         }
     },
 
     deleteBookmark: async (id: string) => {
         try {
+            set({ loading: true })
             set({ actionType: BOOKMARK_ACTION.DELETE_BOOKMARK })
             await bookmarkService.deleteBookmark(id)
-
             const bookmarksAfterDeleted = get().bookmarks.filter(
                 (item) => item.id != id
             )
@@ -105,6 +109,7 @@ export const useBookmarkStore = create<BookmarkState>()((set, get) => ({
             throw err
         } finally {
             set({ actionType: '' })
+            set({ loading: false })
         }
     },
 }))

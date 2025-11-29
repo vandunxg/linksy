@@ -28,7 +28,7 @@ const FolderPage = () => {
     const [targetFolderId, setTargetFolderId] = useState<string>('')
 
     const { folders, loading, actionType } = useFolderStore()
-    const { addBookmark } = useBookmarkStore()
+    const { addBookmark, loading: addBookmarkLoading } = useBookmarkStore()
 
     const [searchQuery, setSearchQuery] = useState('')
     const [sortBy, setSortBy] = useState('newest')
@@ -267,6 +267,7 @@ const FolderPage = () => {
                 setIsOpen={setIsAddBookmarkOpen}
                 onAddBookmark={addBookmark}
                 defaultFolderId={targetFolderId}
+                loading={addBookmarkLoading}
             />
         </>
     )

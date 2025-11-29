@@ -47,7 +47,7 @@ const DashboardPage = () => {
                     {/* <div className="bg-muted/50 aspect-video rounded-xl" /> */}
 
                     <RecentBookmark
-                        bookmarks={bookmarks.slice(0, 5)}
+                        bookmarks={bookmarks.slice(0, 6)}
                         loading={fetchBookmarksLoading}
                     />
 

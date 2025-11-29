@@ -47,9 +47,15 @@ type Props = {
     folder: FolderResponse | null
     isOpen: boolean
     setIsOpen: Dispatch<SetStateAction<boolean>>
+    loading?: boolean
 }
 
-export function EditFolderDialog({ folder, isOpen, setIsOpen }: Props) {
+export function EditFolderDialog({
+    folder,
+    isOpen,
+    setIsOpen,
+    loading,
+}: Props) {
     const form = useForm<FolderFormType>({
         resolver: zodResolver(folderSchema),
         defaultValues: {
@@ -210,7 +216,9 @@ export function EditFolderDialog({ folder, isOpen, setIsOpen }: Props) {
                                     Cancel
                                 </Button>
                             </DialogClose>
-                            <Button type="submit">Update</Button>
+                            <Button disabled={loading} type="submit">
+                                {loading ? 'Updating' : 'Save changes'}
+                            </Button>
                         </DialogFooter>
                     </form>
                 </Form>

@@ -289,6 +289,7 @@ const BookmarkPage = () => {
                                 >
                                     <BookmarkCard
                                         bookmark={item}
+                                        loading={loading}
                                         onDelete={handleDeleteBookmark}
                                         onClick={(b) => {
                                             setSelectedBookmark(b)
@@ -331,6 +332,7 @@ const BookmarkPage = () => {
                 isOpen={isCreateBookmark}
                 setIsOpen={setIsCreateBookmark}
                 onAddBookmark={addBookmark}
+                loading={loading}
             />
         </motion.div>
     )

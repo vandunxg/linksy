@@ -45,9 +45,10 @@ type FolderFormType = z.infer<typeof folderSchema>
 type Props = {
     isOpen: boolean
     setIsOpen: Dispatch<SetStateAction<boolean>>
+    loading?: boolean
 }
 
-export function AddFolderDialog({ isOpen, setIsOpen }: Props) {
+export function AddFolderDialog({ isOpen, setIsOpen, loading }: Props) {
     const form = useForm<FolderFormType>({
         resolver: zodResolver(folderSchema),
         defaultValues: {
@@ -198,7 +199,9 @@ export function AddFolderDialog({ isOpen, setIsOpen }: Props) {
                                     Cancel
                                 </Button>
                             </DialogClose>
-                            <Button type="submit">Add new folder</Button>
+                            <Button disabled={loading} type="submit">
+                                {loading ? 'Adding...' : 'Add new folder'}
+                            </Button>
                         </DialogFooter>
                     </form>
                 </Form>

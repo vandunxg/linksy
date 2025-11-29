@@ -46,9 +46,15 @@ type Props = {
     isOpen: boolean
     setIsOpen: Dispatch<SetStateAction<boolean>>
     bookmark: BookmarkResponse
+    loading?: boolean
 }
 
-export function EditBookmarkDialog({ isOpen, setIsOpen, bookmark }: Props) {
+export function EditBookmarkDialog({
+    isOpen,
+    setIsOpen,
+    bookmark,
+    loading,
+}: Props) {
     const { folders } = useFolderStore()
     const { updateBookmark } = useBookmarkStore()
 
@@ -202,7 +208,9 @@ export function EditBookmarkDialog({ isOpen, setIsOpen, bookmark }: Props) {
                                     Cancel
                                 </Button>
                             </DialogClose>
-                            <Button type="submit">Save changes</Button>
+                            <Button disabled={loading} type="submit">
+                                {loading ? 'Updating' : 'Save changes'}
+                            </Button>
                         </DialogFooter>
                     </form>
                 </Form>

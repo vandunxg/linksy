@@ -14,9 +14,15 @@ type Props = {
     isOpen: boolean
     setIsOpen: Dispatch<SetStateAction<boolean>>
     onConfirm: () => void
+    loading?: boolean
 }
 
-export function AlertDeleteDialog({ isOpen, setIsOpen, onConfirm }: Props) {
+export function AlertDeleteDialog({
+    isOpen,
+    setIsOpen,
+    onConfirm,
+    loading,
+}: Props) {
     return (
         <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
             <AlertDialogContent>
@@ -32,12 +38,13 @@ export function AlertDeleteDialog({ isOpen, setIsOpen, onConfirm }: Props) {
                 <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
                     <AlertDialogAction
+                        disabled={loading}
                         onClick={() => {
                             onConfirm()
                             setIsOpen(false)
                         }}
                     >
-                        Continue
+                        {loading ? 'Deleting' : 'Continue'}
                     </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
